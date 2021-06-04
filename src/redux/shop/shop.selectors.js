@@ -20,10 +20,12 @@ createSelector(
   collections => (collections ? collections[collectionUrlParam] : null)
 ));
 
+export const selectCollectionFetching = createSelector(
+  [selectShop],
+  shop => shop.isFetching
+);
 
-// export const selectCollection = (collectionUrlParam) =>
-// createSelector(
-//   [selectCollections],
-//   collections => collections.find( collection =>
-//   collection.routeName === collectionUrlParam)
-// );
+export const selectCollectionLoaded = createSelector(
+  [selectShop],
+  shop => !!shop.collections
+);
