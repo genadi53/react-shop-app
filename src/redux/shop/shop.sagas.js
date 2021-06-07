@@ -4,7 +4,6 @@ import { firestore, convertCollectionsSnapstopToMap } from '../../firebase/fireb
 import { fetchCollectionsSuccess, fetchCollectionsError } from './shop.actions';
 
 export function* fetchCollectionsAsync(){
-    
     try{
         const collectionRef = firestore.collection('collections');
         const snapshot = yield collectionRef.get();
