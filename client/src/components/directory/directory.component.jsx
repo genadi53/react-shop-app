@@ -11,7 +11,6 @@ const Directory = ({ sections }) => {
   return (
     <div className="directory-menu">
       {sections.map(({ id, ...SectionProps }) => {
-        console.log(sections);
         return <MenuItem key={id} {...SectionProps} />;
       })}
     </div>
