@@ -3,9 +3,9 @@ import StripeCheckout from "react-stripe-checkout";
 import { connect } from "react-redux";
 import axios from "axios";
 
-import { clearCart } from "../../redux/cart/cart.actions";
+import { clearCart, updateCartInFirebase } from "../../redux/cart/cart.actions";
 
-const StripeCheckoutButton = ({ price, clearCart }) => {
+const StripeCheckoutButton = ({ price, clearCart, updateCartInFirebase }) => {
   const priceFroStripe = price * 100;
   const publishableKey =
     "pk_test_51IwpIGGsIir6ptzlwpkA7Acu7UuNkR6NNSaOGE4w4E7BGNNYOQMQsWLDAyQbJbca8rzTQYINltrmqpl6Kjg9bAEo00aqCaiIe9";
@@ -22,6 +22,7 @@ const StripeCheckoutButton = ({ price, clearCart }) => {
       .then((response) => {
         alert("Payment Succesful!");
         clearCart();
+        updateCartInFirebase();
       })
       .catch((error) => {
         console.log("Payment Error: ", error.response);
@@ -35,7 +36,7 @@ const StripeCheckoutButton = ({ price, clearCart }) => {
       name="Shelby Company Ltd."
       billingAddress
       shippingAddress
-      image="https://svgshare.com/i/CUz.svg"
+      image="https://svgshare.com/i/CUz.svg" //https://svgshare.com/i/CUz.svg https://sendeyo.com/up/d/f3eb2117da
       description={`Your total is ${price}`}
       amount={priceFroStripe}
       panelLabel="Pay Now"
@@ -46,6 +47,7 @@ const StripeCheckoutButton = ({ price, clearCart }) => {
 };
 const mapDispatchToProps = (dispatch) => ({
   clearCart: () => dispatch(clearCart()),
+  updateCartInFirebase: () => dispatch(updateCartInFirebase()),
 });
 
 export default connect(null, mapDispatchToProps)(StripeCheckoutButton);
