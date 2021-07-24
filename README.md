@@ -2,7 +2,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/genadi53/react-shop-app">
-    <img src="src/assets/crown.svg" alt="Logo" width="80" height="80">
+    <img src="client/src/assets/crown.svg" alt="Logo" width="80" height="80">
   </a>
 
 <br />
