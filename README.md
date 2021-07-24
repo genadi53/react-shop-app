@@ -44,9 +44,17 @@ To get a local copy up and running follow these simple steps.
 2. Install NPM packages
    ```sh
    npm install
+   cd client
+   npm install
    ```
 3. Run the app
+
    ```sh
     npm start
+    // open new terminal tab
+    cd client
+    npm start
+
    ```
+
    Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
