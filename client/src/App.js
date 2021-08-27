@@ -1,64 +1,78 @@
-import React, { useEffect, lazy, Suspense } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import React from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
-import Header from "./components/header/header.component";
-import Spinner from "./components/spinner/spinner.component";
-import ErrorBoundary from "./components/error-boundary/error-boundary.component";
+import './App.css';
 
-import { checkUserSession } from "./redux/user/user.actions";
-import { selectCurrentUser } from "./redux/user/user.selectors";
+import HomePage from './pages/homepage/homepage.component';
+import ShopPage from './pages/shop/shop.component';
+import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
+import CheckoutPage from './pages/checkout/checkout.component';
 
-import { GlobalStyle } from "./global.styles";
+import Header from './components/header/header.component';
 
-const HomePage = lazy(() => import("./pages/homepage/homepage.component"));
-const ShopPage = lazy(() => import("./pages/shop/shop.copmponent"));
-const CheckoutPage = lazy(() => import("./pages/checkout/checkout.component"));
-const SignInAndSignUpPage = lazy(() =>
-  import("./pages/sign-in-and-sign-up/SignInAndSignUp.component")
-);
+import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
-const App = ({ checkUserSession, currentUser }) => {
-  useEffect(() => {
-    checkUserSession();
-  }, [checkUserSession]);
+import CurrentUserContext from './contexts/current-user/current-user.context';
 
-  return (
-    <div>
-      <GlobalStyle />
-      <Header />
-      <Switch>
-        <ErrorBoundary>
-          <Suspense fallback={<Spinner />}>
-            <Route exact path="/" component={HomePage} />
+class App extends React.Component {
+  constructor() {
+    super();
 
-            <Route path="/shop" component={ShopPage} />
-            <Route exact path="/checkout" component={CheckoutPage} />
-            <Route
-              exact
-              path="/signin"
-              render={() =>
-                currentUser ? (
-                  <Redirect to="/"></Redirect>
-                ) : (
-                  <SignInAndSignUpPage />
-                )
-              }
-            />
-          </Suspense>
-        </ErrorBoundary>
-      </Switch>
-    </div>
-  );
-};
+    this.state = {
+      currentUser: null
+    };
+  }
 
-const mapDispatchToProps = (dispatch) => ({
-  checkUserSession: () => dispatch(checkUserSession()),
-});
+  unsubscribeFromAuth = null;
 
-const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
-});
+  componentDidMount() {
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      if (userAuth) {
+        const userRef = await createUserProfileDocument(userAuth);
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+        userRef.onSnapshot(snapShot => {
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data()
+            }
+          });
+        });
+      }
+
+      this.setState({ currentUser: userAuth });
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeFromAuth();
+  }
+
+  render() {
+    return (
+      <div>
+        <CurrentUserContext.Provider value={this.state.currentUser}>
+          <Header />
+        </CurrentUserContext.Provider>
+        <Switch>
+          <Route exact path='/' component={HomePage} />
+          <Route path='/shop' component={ShopPage} />
+          <Route exact path='/checkout' component={CheckoutPage} />
+          <Route
+            exact
+            path='/signin'
+            render={() =>
+              this.state.currentUser ? (
+                <Redirect to='/' />
+              ) : (
+                <SignInAndSignUpPage />
+              )
+            }
+          />
+        </Switch>
+      </div>
+    );
+  }
+}
+
+export default App;

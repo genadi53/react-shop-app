@@ -1,53 +1,29 @@
-import React from "react";
-import StripeCheckout from "react-stripe-checkout";
-import { connect } from "react-redux";
-import axios from "axios";
+import React from 'react';
+import StripeCheckout from 'react-stripe-checkout';
 
-import { clearCart, updateCartInFirebase } from "../../redux/cart/cart.actions";
+const StripeCheckoutButton = ({ price }) => {
+  const priceForStripe = price * 100;
+  const publishableKey = 'pk_test_WBqax2FWVzS9QlpJScO07iuL';
 
-const StripeCheckoutButton = ({ price, clearCart, updateCartInFirebase }) => {
-  const priceFroStripe = price * 100;
-  const publishableKey =
-    "pk_test_51IwpIGGsIir6ptzlwpkA7Acu7UuNkR6NNSaOGE4w4E7BGNNYOQMQsWLDAyQbJbca8rzTQYINltrmqpl6Kjg9bAEo00aqCaiIe9";
-
-  const onToken = (token) => {
-    axios({
-      url: "payment",
-      method: "post",
-      data: {
-        amount: priceFroStripe,
-        token: token,
-      },
-    })
-      .then((response) => {
-        alert("Payment Succesful!");
-        clearCart();
-        updateCartInFirebase();
-      })
-      .catch((error) => {
-        console.log("Payment Error: ", error.response);
-        alert("There was an issue with your payment!");
-      });
+  const onToken = token => {
+    console.log(token);
+    alert('Payment Succesful!');
   };
 
   return (
     <StripeCheckout
-      label="Pay Now"
-      name="Shelby Company Ltd."
+      label='Pay Now'
+      name='CRWN Clothing Ltd.'
       billingAddress
       shippingAddress
-      image="https://svgshare.com/i/CUz.svg" //https://svgshare.com/i/CUz.svg https://sendeyo.com/up/d/f3eb2117da
-      description={`Your total is ${price}`}
-      amount={priceFroStripe}
-      panelLabel="Pay Now"
+      image='https://svgshare.com/i/CUz.svg'
+      description={`Your total is $${price}`}
+      amount={priceForStripe}
+      panelLabel='Pay Now'
       token={onToken}
       stripeKey={publishableKey}
     />
   );
 };
-const mapDispatchToProps = (dispatch) => ({
-  clearCart: () => dispatch(clearCart()),
-  updateCartInFirebase: () => dispatch(updateCartInFirebase()),
-});
 
-export default connect(null, mapDispatchToProps)(StripeCheckoutButton);
+export default StripeCheckoutButton;
