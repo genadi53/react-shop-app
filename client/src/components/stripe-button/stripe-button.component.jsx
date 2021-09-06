@@ -1,11 +1,15 @@
 import React from "react";
 import StripeCheckout from "react-stripe-checkout";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 
 import { clearCart, updateCartInFirebase } from "../../redux/cart/cart.actions";
 
-const StripeCheckoutButton = ({ price, clearCart, updateCartInFirebase }) => {
+const StripeCheckoutButton = ({ price }) => {
+  const dispatch = useDispatch();
+  const clearCartHandler = () => dispatch(clearCart());
+  const updateCartInFirebaseHandler = () => dispatch(updateCartInFirebase());
+
   const priceFroStripe = price * 100;
   const publishableKey =
     "pk_test_51IwpIGGsIir6ptzlwpkA7Acu7UuNkR6NNSaOGE4w4E7BGNNYOQMQsWLDAyQbJbca8rzTQYINltrmqpl6Kjg9bAEo00aqCaiIe9";
@@ -21,8 +25,8 @@ const StripeCheckoutButton = ({ price, clearCart, updateCartInFirebase }) => {
     })
       .then((response) => {
         alert("Payment Succesful!");
-        clearCart();
-        updateCartInFirebase();
+        clearCartHandler();
+        updateCartInFirebaseHandler();
       })
       .catch((error) => {
         console.log("Payment Error: ", error.response);
@@ -45,9 +49,9 @@ const StripeCheckoutButton = ({ price, clearCart, updateCartInFirebase }) => {
     />
   );
 };
-const mapDispatchToProps = (dispatch) => ({
-  clearCart: () => dispatch(clearCart()),
-  updateCartInFirebase: () => dispatch(updateCartInFirebase()),
-});
+// const mapDispatchToProps = (dispatch) => ({
+//   clearCart: () => dispatch(clearCart()),
+//   updateCartInFirebase: () => dispatch(updateCartInFirebase()),
+// });
 
-export default connect(null, mapDispatchToProps)(StripeCheckoutButton);
+export default StripeCheckoutButton;
