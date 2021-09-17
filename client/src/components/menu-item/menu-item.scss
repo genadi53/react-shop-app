@@ -72,5 +72,19 @@
       font-weight: lighter;
       font-size: 16px;
     }
+
+    @media screen and (max-width: 500px) {
+      width: 100px;
+
+      .title {
+        margin-bottom: 3px;
+        font-size: 18px;
+      }
+
+      .subtitle {
+        font-weight: lighter;
+        font-size: 14px;
+      }
+    }
   }
 }

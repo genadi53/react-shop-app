@@ -1,9 +1,10 @@
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
-
 const express = require("express");
 const path = require("path");
 const Stripe = require("stripe");
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = Stripe(
+  "sk_test_51IwpIGGsIir6ptzl3HduCvY7iYjZw6S3NHi6Lo9iSKM0QTJ0ICpCJZDQZjmra5AyNZfOV8aRibvjqni7awYGKnjF00Elq4aM0Q"
+);
 const compression = require("compression");
 const enforce = require("express-sslify");
 const cors = require("cors");
@@ -13,7 +14,12 @@ const port = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000/",
+    credentials: true,
+  })
+);
 
 if (process.env.NODE_ENV === "production") {
   app.use(compression());
